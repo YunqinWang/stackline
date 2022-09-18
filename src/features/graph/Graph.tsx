@@ -6,7 +6,11 @@ import {
   selectRetailSales,
   selectWholeSales,
   selectRetailMargin,
-  selectUnitsSold
+  selectUnitsSold,
+
+  setSortKey,
+  setTableData,
+  selectDataTable
 } from './dataSlice';
 
 import styles from './Graph.module.css';
@@ -69,7 +73,7 @@ let retail:number[]=[]
 let whole:number[]=[]
 let margin:number[]=[]
 let units :number[]= []
-
+let dateNum :number[]=[]
 // draw graph
 export function Graph() {
   // call the reducer to update the sales data
@@ -184,6 +188,8 @@ export function Graph() {
   )
 }
 
+
+dateNum = dateStringToNum(labels);
 // convert date string to number
 function dateStringToNum(dateArray:string[]){
   let dateList:number[]=[];
@@ -195,15 +201,7 @@ function dateStringToNum(dateArray:string[]){
   return dateList;
 }
 
-// set the table with rows
-function setRow(date:string[], retail:number[], wholesale:number[], units:number[], margin:number[]){
-    let rows:any[][] =[];
-    for (let i=0;i<date.length;i++) {
-      let eachRow:any[] = [date[i],retail[i],wholesale[i],units[i],margin[i]];
-      rows.push(eachRow);
-    }
-    return rows;
-}
+
 
 // set a row with cells
 function getRow(rows:number[][]){
@@ -227,15 +225,25 @@ function getItem(row:number[]){
   })
   return items;
 }
+
 export function Table() {
+  const dispatch = useAppDispatch();
+  dispatch(setTableData());
+  const rawTable = useAppSelector(selectDataTable);
   const dateNumber = dateStringToNum(labels);
-  const rows =setRow(labels,retail,whole,units,margin);
+  
   return (
    <div className = {styles.graphBox}>
       <table>
         <thead>
           <tr>
-            <td>Week Ending</td>
+            <td>Week Ending  
+              <button
+              className={styles.button}
+              onClick={() => {dispatch(setSortKey("weekEnding"))}}
+             >
+            </button>
+          </td>
             <td>Retail Sales</td>
             <td>Wholesale Sales</td>
             <td>Units Sold</td>
@@ -243,9 +251,10 @@ export function Table() {
           </tr>
         </thead>
         <tbody>
-          {getRow(rows)}
+          {getRow(rawTable)}
         </tbody>
       </table>
    </div>
   )
 }
+
