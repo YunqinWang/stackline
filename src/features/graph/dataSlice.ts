@@ -2,14 +2,22 @@ import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { fetchSales } from '../infoAPI';
 
-export interface GraphState {
+export interface DataState {
+  product:string;
+  description:string;
+  tags:Array<string>;
+  productImg: string;
   date:string[];
   retailSales:number[];
   wholeSales:number[];
   retailMargin:number[];
   unitsSold:number[];
 }
-const initialState: GraphState = {
+const initialState: DataState = {
+  product: "",
+  description: "",
+  tags: [],
+  productImg: "",
   date:[],
   retailSales: [],
   wholeSales:[],
@@ -19,6 +27,8 @@ const initialState: GraphState = {
 
 const monthName = ['January', 'February', 'March','April', 'May', 'June', 'July', 
 'August', 'September', 'October', 'November', 'December']
+
+
 function labelSanitizer(labelList:string[]){
   let cleanedLabelList:string[] = [];
   let allMonthNum:number[] = [];
@@ -40,13 +50,25 @@ function labelSanitizer(labelList:string[]){
   return cleanedLabelList;
 }
 
-export const dataSales = fetchSales().sales;
+export const database = fetchSales(); // entire database
+export const dataSales = database.sales; // sales data
 
-export const graphSlice = createSlice({
-  name: 'sales',
+
+
+
+export const dataSlice = createSlice({
+  name: 'data',
   initialState,
-  
   reducers: {
+    // get basic info
+    getInfo: (state) => {
+      state.product = database.title;
+      state.description = database.subtitle;
+      state.tags = database.tags;
+      state.productImg = database.image;
+    },
+ 
+    // get sales data
     getSales: (state) => {
       state.date =[];
       state.retailSales=[];
@@ -65,15 +87,18 @@ export const graphSlice = createSlice({
   },
 });
 
-export const { getSales } = graphSlice.actions;
+export const { getInfo, getSales } = dataSlice.actions;
 
-// The function below is called a selector and allows us to select a value from
-// the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-export const selectDate = (state: RootState) => state.graph.date;
-export const selectRetailSales = (state: RootState) => state.graph.retailSales;
-export const selectWholeSales = (state: RootState) => state.graph.wholeSales;
-export const selectRetailMargin = (state: RootState) => state.graph.retailMargin;
-export const selectUnitsSold = (state: RootState) => state.graph.unitsSold;
+// call a selector to select a value from the state
+export const selectProduct = (state: RootState) => state.data.product;
+export const selectDescription = (state: RootState) => state.data.description;
+export const selectTags = (state: RootState) => state.data.tags;
+export const selectImg = (state: RootState) => state.data.productImg;
 
-export default graphSlice.reducer;
+export const selectDate = (state: RootState) => state.data.date;
+export const selectRetailSales = (state: RootState) => state.data.retailSales;
+export const selectWholeSales = (state: RootState) => state.data.wholeSales;
+export const selectRetailMargin = (state: RootState) => state.data.retailMargin;
+export const selectUnitsSold = (state: RootState) => state.data.unitsSold;
+
+export default dataSlice.reducer;

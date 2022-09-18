@@ -27,7 +27,6 @@ export function Info() {
   
   const dispatch = useAppDispatch();
   dispatch(getInfo());
-  
 
   return (
     <div>
