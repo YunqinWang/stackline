@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
-
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import {Line} from 'react-chartjs-2';
+import {
+  getSales,
+  selectDate,
+  selectRetailSales,
+  selectWholeSales,
+  selectRetailMargin,
+  selectUnitsSold
+} from './graphSlice';
+
+import styles from './Graph.module.css';
 import {
   Chart as ChartJS,
   LinearScale,
@@ -27,17 +35,6 @@ ChartJS.register(
   LineController,
   BarController
 );
-import {
-  getSales,
-  selectDate,
-  selectRetailSales,
-  selectWholeSales,
-  selectRetailMargin,
-  selectUnitsSold
-} from './graphSlice';
-
-import styles from './Graph.module.css';
-import { truncate } from 'fs/promises';
 
 export const options = {
   responsive: true,
@@ -52,7 +49,6 @@ export const options = {
       display: false,
       text: 'Retail Sales',
     },
-    
   },
   elements: {
     point:{
@@ -85,7 +81,7 @@ export const options = {
       },
     },
   },
-};
+}
 
 function getMaxOfTwoArray(array1:number[], array2:number[]){
   const yMax1 = array1.reduce((a, b) => Math.max(a, b), -Infinity);
@@ -111,22 +107,87 @@ function getMonthLi(){
   return monthList;
 }
 
+
+
+function sortRow(numArray:number[],rowArray:number[][],largeToSmall:boolean) {
+  let i=0;
+  while(i!=numArray.length){
+    let j=i;
+    while(j>0 && largeToSmall? numArray[j]<numArray[j-1]: numArray[j]>numArray[j-1]){
+      swap(numArray[j], numArray[j-1]);
+      swap(rowArray[j], rowArray[j-1]);
+      j--;
+    }
+    i++;
+  }
+}
+function swap(a:any,b:any){
+  let temp =a;
+  a=b;
+  b=temp;
+}
+
+function dateStringToNum(dateArray:string[]){
+  let dateList:number[]=[];
+  dateArray.forEach((item)=>{
+    let itemDate = new Date(item);
+    itemDate.setDate(itemDate.getDate()+1);
+    dateList.push(itemDate.getTime());
+  })
+  return dateList;
+}
+
+function setRow(date:string[], retail:number[], wholesale:number[], units:number[], margin:number[]){
+    let rows:any[][] =[];
+    for (let i=0;i<date.length;i++) {
+      let eachRow:any[] = [date[i],retail[i],wholesale[i],units[i],margin[i]];
+      rows.push(eachRow);
+    }
+    return rows;
+}
+
+function getRow(rows:number[][]){
+  let allRows:JSX.Element[]=[];
+  rows.forEach((row)=>{
+    let rowItems =(
+      <tr>{getItem(row)}</tr>
+    )
+    allRows.push(rowItems);
+  })
+  return allRows;
+}
+
+function getItem(row:number[]){
+  let items:JSX.Element[]=[]
+  row.forEach(cell => {
+    items.push(
+      <td>{cell}</td>
+    )
+  })
+  return items;
+}
+
+let labels:string[]=[];
+let retail:number[]=[];
+let whole:number[]=[]
+let margin:number[]=[]
+let units :number[]= []
 export function Graph() {
   const dispatch = useAppDispatch();
   dispatch(getSales());
 
-  const labels = useAppSelector(selectDate);
-  const retail = useAppSelector(selectRetailSales);
-  const whole = useAppSelector(selectWholeSales);
-  const margin = useAppSelector(selectRetailMargin);
-  const units = useAppSelector(selectUnitsSold);
+  labels = useAppSelector(selectDate);
+  retail = useAppSelector(selectRetailSales);
+  whole = useAppSelector(selectWholeSales);
+  margin = useAppSelector(selectRetailMargin);
+  units = useAppSelector(selectUnitsSold);
 
   const yMaxSales = getMaxOfTwoArray(retail, margin);
   const yMinSales = getMinOfTwoArray(retail, margin);
 
   const yMaxUnits = getMaxOfTwoArray(units, units);
 
-  const options1 = {
+  const options = {
     responsive: true,
     maintainAspectRatio:false,
     interaction: {
@@ -206,11 +267,28 @@ export function Graph() {
    <div className = {styles.graphBox}>
       <h3  className = {styles.graphTitle}>Retail Sales</h3>
       <div className = {styles.graphCanvas}>
-        <Chart type ="bar" className = {styles.graph} options={options1} data= {graphData} />
+        <Chart type ="bar" className = {styles.graph} options={options} data= {graphData} />
       </div>
       <ul className = {styles.monthLabel}>
         {getMonthLi()}
       </ul>
+   </div>
+  )
+}
+export function Table() {
+
+
+  const dateNumber = dateStringToNum(labels);
+  
+
+  const rows =setRow(labels,retail,whole,units,margin);
+  console.log(rows);
+
+  return (
+   <div className = {styles.graphBox}>
+      <table>
+        {getRow(rows)}
+      </table>
    </div>
   )
 }

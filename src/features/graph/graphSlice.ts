@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState, AppThunk } from '../../app/store';
+import { createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
 import { fetchSales } from '../infoAPI';
 
 export interface GraphState {
@@ -41,7 +41,7 @@ function labelSanitizer(labelList:string[]){
 }
 
 export const dataSales = fetchSales().sales;
-console.log(dataSales.length);
+
 export const graphSlice = createSlice({
   name: 'sales',
   initialState,
@@ -53,6 +53,7 @@ export const graphSlice = createSlice({
       state.wholeSales=[];
       state.retailMargin=[];
       state.unitsSold=[];
+      
       dataSales.forEach((d)=>{
         state.date.push(d.weekEnding);
         state.retailSales.push(d.retailSales);
