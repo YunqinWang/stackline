@@ -1,0 +1,6 @@
+const SALES ={
+    LOAD: "REQUEST_SALES_DATA",
+    LOAD_SUCCESS:"RECEIVE_SALES_DATA"
+};
+
+export default SALES;

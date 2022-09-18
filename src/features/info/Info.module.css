@@ -1,0 +1,26 @@
+.infoBox{
+    width:100%;
+}
+.infoImg{
+    width:50%;
+    margin: auto;
+}
+.infoImg img{
+    width: 100%;
+}
+.infoName{
+    font-size: 20px;
+}
+.infoTags{
+    margin:5px 0px;
+    padding: 0px;
+}
+.infoTag{
+    font-size: 15px;
+    display:inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-right: 5px;
+    text-align: center;
+}
