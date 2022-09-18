@@ -7,7 +7,7 @@ import {
   selectDescription,
   selectTags,
   selectImg,
-} from './infoSlice';
+} from './dataSlice';
 import styles from './Info.module.css';
 
 function getTagList(tags: String[]){

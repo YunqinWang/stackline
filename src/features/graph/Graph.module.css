@@ -20,3 +20,46 @@
   color:#c0c1ca;
   letter-spacing: 0.02rem;
 }
+table{
+  width: 100%;
+  padding: 20px;
+}
+
+table tr td{
+  border-bottom: 1px solid #dddddd;
+  padding: 10px 0;
+  font-size: 12px;
+  text-align: right;
+}
+
+tr :first-child{
+  width:8%;
+}
+tr :not(:first-child){
+  width:23%;
+}
+
+tbody tr td:nth-child(2):before,
+tbody tr td:nth-child(3):before,
+tbody tr td:nth-child(5):before{
+  content:"$";
+}
+
+tr :nth-child(1){
+  text-align: left;
+}
+
+.th{
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.th td{
+  padding: 20px 0;
+}
+
+.tableSortToggle{
+  background: url("../../../public/down-arrow.png");
+  width:10px;
+}

@@ -1,11 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import infoReducer from '../features/info/infoSlice';
-import graphReducer from '../features/graph/graphSlice';
+import dataReducer from '../features/graph/dataSlice';
+import tableReducer from '../features/graph/tableSlice';
 
 export const store = configureStore({
   reducer: {
-    info: infoReducer,
-    graph:graphReducer,
+    data:dataReducer,
+    table:tableReducer,
   },
 });
 

@@ -5,7 +5,7 @@ import { fetchSales } from '../infoAPI';
 export interface DataState {
   product:string;
   description:string;
-  tags:Array<string>;
+  tags:string[];
   productImg: string;
   date:string[];
   retailSales:number[];
@@ -25,9 +25,13 @@ const initialState: DataState = {
   unitsSold:[],
 };
 
+const database = fetchSales(); // entire database
+const dataSales = database.sales; // sales data
+
+
+
 const monthName = ['January', 'February', 'March','April', 'May', 'June', 'July', 
 'August', 'September', 'October', 'November', 'December']
-
 
 function labelSanitizer(labelList:string[]){
   let cleanedLabelList:string[] = [];
@@ -49,11 +53,6 @@ function labelSanitizer(labelList:string[]){
   })
   return cleanedLabelList;
 }
-
-export const database = fetchSales(); // entire database
-export const dataSales = database.sales; // sales data
-
-
 
 
 export const dataSlice = createSlice({
@@ -84,6 +83,8 @@ export const dataSlice = createSlice({
         state.unitsSold.push(d.unitsSold);
       })
     }
+
+    
   },
 });
 

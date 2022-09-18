@@ -1,8 +1,8 @@
 import React from 'react';
 
 import  Nav  from './components/Nav';
-import { Info } from './features/info/Info';
-import { Graph } from './features/graph/Graph';
+import { Info } from './features/graph/Info';
+import { Graph} from './features/graph/Graph';
 import { Table } from './features/graph/Graph';
 import './App.css';
 
