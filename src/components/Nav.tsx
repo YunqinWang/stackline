@@ -6,6 +6,7 @@ type Props = {
   NavLogo: HTMLImageElement,
 }
 
+// return the bar with logo
 function Nav() {
     return (
       <div className="nav-box">

@@ -28,33 +28,6 @@ const initialState: DataState = {
 const database = fetchSales(); // entire database
 const dataSales = database.sales; // sales data
 
-
-
-const monthName = ['January', 'February', 'March','April', 'May', 'June', 'July', 
-'August', 'September', 'October', 'November', 'December']
-
-function labelSanitizer(labelList:string[]){
-  let cleanedLabelList:string[] = [];
-  let allMonthNum:number[] = [];
-
-  labelList.forEach((item)=>{
-    let itemDate = new Date(item);
-    itemDate.setDate(itemDate.getDate()+1);
-    let itemMonth = itemDate.getMonth();
-    let currentLength = allMonthNum.length;
-
-    if (currentLength==0 || itemMonth != allMonthNum[currentLength-1]){
-      allMonthNum.push (itemMonth);
-      cleanedLabelList.push(monthName[itemMonth]);
-    }
-    else{
-      cleanedLabelList.push (" ");
-    }
-  })
-  return cleanedLabelList;
-}
-
-
 export const dataSlice = createSlice({
   name: 'data',
   initialState,

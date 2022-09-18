@@ -24,7 +24,7 @@ function App() {
           <section className="graph-container">
             <Graph />
           </section>
-          <section>
+          <section className="table-container">
             <Table/>
           </section>
         </div>

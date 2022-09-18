@@ -10,6 +10,7 @@ import {
 } from './dataSlice';
 import styles from './Info.module.css';
 
+// return the tags of the product
 function getTagList(tags: String[]){
   let tagList: JSX.Element[] =[];
   tags.forEach(tag => {
@@ -18,6 +19,8 @@ function getTagList(tags: String[]){
   return tagList;
 };
 
+
+// return the information cardof the product
 export function Info() {
   
   const productName = useAppSelector(selectProduct);
