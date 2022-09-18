@@ -7,7 +7,7 @@ import {
   selectWholeSales,
   selectRetailMargin,
   selectUnitsSold
-} from './graphSlice';
+} from './dataSlice';
 
 import styles from './Graph.module.css';
 import {
@@ -22,6 +22,7 @@ import {
   LineController,
   BarController,
 } from 'chart.js';
+
 import { Chart } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -36,65 +37,21 @@ ChartJS.register(
   BarController
 );
 
-export const options = {
-  responsive: true,
-  maintainAspectRatio:false,
-  interaction: {
-    mode: 'index' as const,
-    intersect: false,
-  },
-  stacked: false,
-  plugins: {
-    title: {
-      display: false,
-      text: 'Retail Sales',
-    },
-  },
-  elements: {
-    point:{
-        radius: 0,
-    },
-  },
-  scales: {
-    x: {
-      title: {
-        display: true,
-        text: 'Month'
-      }
-    },
-    xMonth:{
-      display: false,
-    },
-    ySales: {
-      min: -5000000,
-      max: 5000000,
-      type: 'linear' as const,
-      display: false,
-      position: 'left' as const,
-    },
-    yUnit: {
-      type: 'linear' as const,
-      display: false,
-      position: 'right' as const,
-      grid: {
-        drawOnChartArea: false,
-      },
-    },
-  },
-}
-
+// get max value form two array lists
 function getMaxOfTwoArray(array1:number[], array2:number[]){
   const yMax1 = array1.reduce((a, b) => Math.max(a, b), -Infinity);
   const yMax2 = array2.reduce((a, b) => Math.max(a, b), -Infinity);
   return Math.max(yMax1,yMax2);
 }
 
+// get min value form two array lists
 function getMinOfTwoArray(array1:number[], array2:number[]){
   const yMin1 = array1.reduce((a, b) => Math.min(a, b), Infinity);
   const yMin2 = array2.reduce((a, b) => Math.min(a, b), Infinity);
   return Math.min(yMin1,yMin2);
 }
 
+// return month name in <li> tag
 function getMonthLi(){
   const monthName = ['Jan', 'Feb', 'Mar','Apr', 'May', 'Jun', 'Jul', 
   'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -107,72 +64,15 @@ function getMonthLi(){
   return monthList;
 }
 
-
-
-function sortRow(numArray:number[],rowArray:number[][],largeToSmall:boolean) {
-  let i=0;
-  while(i!=numArray.length){
-    let j=i;
-    while(j>0 && largeToSmall? numArray[j]<numArray[j-1]: numArray[j]>numArray[j-1]){
-      swap(numArray[j], numArray[j-1]);
-      swap(rowArray[j], rowArray[j-1]);
-      j--;
-    }
-    i++;
-  }
-}
-function swap(a:any,b:any){
-  let temp =a;
-  a=b;
-  b=temp;
-}
-
-function dateStringToNum(dateArray:string[]){
-  let dateList:number[]=[];
-  dateArray.forEach((item)=>{
-    let itemDate = new Date(item);
-    itemDate.setDate(itemDate.getDate()+1);
-    dateList.push(itemDate.getTime());
-  })
-  return dateList;
-}
-
-function setRow(date:string[], retail:number[], wholesale:number[], units:number[], margin:number[]){
-    let rows:any[][] =[];
-    for (let i=0;i<date.length;i++) {
-      let eachRow:any[] = [date[i],retail[i],wholesale[i],units[i],margin[i]];
-      rows.push(eachRow);
-    }
-    return rows;
-}
-
-function getRow(rows:number[][]){
-  let allRows:JSX.Element[]=[];
-  rows.forEach((row)=>{
-    let rowItems =(
-      <tr>{getItem(row)}</tr>
-    )
-    allRows.push(rowItems);
-  })
-  return allRows;
-}
-
-function getItem(row:number[]){
-  let items:JSX.Element[]=[]
-  row.forEach(cell => {
-    items.push(
-      <td>{cell}</td>
-    )
-  })
-  return items;
-}
-
-let labels:string[]=[];
-let retail:number[]=[];
+let labels:string[]=[]
+let retail:number[]=[]
 let whole:number[]=[]
 let margin:number[]=[]
 let units :number[]= []
+
+// draw graph
 export function Graph() {
+  // call the reducer to update the sales data
   const dispatch = useAppDispatch();
   dispatch(getSales());
 
@@ -182,11 +82,16 @@ export function Graph() {
   margin = useAppSelector(selectRetailMargin);
   units = useAppSelector(selectUnitsSold);
 
+  // get min and max values of two sales data
+  // used to set the y axis scale of sales line graph
   const yMaxSales = getMaxOfTwoArray(retail, margin);
   const yMinSales = getMinOfTwoArray(retail, margin);
 
+  // get max value of the sold unit data
+  // used to set the y axis scale of units chart graph
   const yMaxUnits = getMaxOfTwoArray(units, units);
 
+  // garph setting, like scale, axis, labels, etc
   const options = {
     responsive: true,
     maintainAspectRatio:false,
@@ -226,6 +131,9 @@ export function Graph() {
       },
     },
   }
+
+  // graph data, draw Reatil Sales and Retailer Margin with lines
+  // draw Sold Units with chart
   const graphData ={
     labels,
     datasets: [
@@ -275,19 +183,68 @@ export function Graph() {
    </div>
   )
 }
+
+// convert date string to number
+function dateStringToNum(dateArray:string[]){
+  let dateList:number[]=[];
+  dateArray.forEach((item)=>{
+    let itemDate = new Date(item);
+    itemDate.setDate(itemDate.getDate()+1);
+    dateList.push(itemDate.getTime());
+  })
+  return dateList;
+}
+
+// set the table with rows
+function setRow(date:string[], retail:number[], wholesale:number[], units:number[], margin:number[]){
+    let rows:any[][] =[];
+    for (let i=0;i<date.length;i++) {
+      let eachRow:any[] = [date[i],retail[i],wholesale[i],units[i],margin[i]];
+      rows.push(eachRow);
+    }
+    return rows;
+}
+
+// set a row with cells
+function getRow(rows:number[][]){
+  let allRows:JSX.Element[]=[];
+  rows.forEach((row,i)=>{
+    let rowItems =(
+      <tr key={i}>{getItem(row)}</tr>
+    )
+    allRows.push(rowItems);
+  })
+  return allRows;
+}
+
+// set cells of a row with data
+function getItem(row:number[]){
+  let items:JSX.Element[]=[]
+  row.forEach(cell => {
+    items.push(
+      <td>{cell}</td>
+    )
+  })
+  return items;
+}
 export function Table() {
-
-
   const dateNumber = dateStringToNum(labels);
-  
-
   const rows =setRow(labels,retail,whole,units,margin);
-  console.log(rows);
-
   return (
    <div className = {styles.graphBox}>
       <table>
-        {getRow(rows)}
+        <thead>
+          <tr>
+            <td>Week Ending</td>
+            <td>Retail Sales</td>
+            <td>Wholesale Sales</td>
+            <td>Units Sold</td>
+            <td>Retailer Margin</td>
+          </tr>
+        </thead>
+        <tbody>
+          {getRow(rows)}
+        </tbody>
       </table>
    </div>
   )
