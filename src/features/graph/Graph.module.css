@@ -33,8 +33,13 @@ thead tr td{
   font-weight: 500;
   text-transform: uppercase;
   padding: 20px 0;
+  
+}
+
+thead tr :not(:first-child){
   text-align: right;
 }
+
 tbody tr td{
   border-bottom: 1px solid #dddddd;
   padding: 10px 0;
@@ -45,6 +50,7 @@ tbody tr td{
 tr :first-child{
   width:8%;
 }
+
 tr :not(:first-child){
   width:23%;
 }
@@ -57,8 +63,4 @@ tbody tr td:nth-child(5):before{
 
 tr:nth-child(1){
   text-align: left;
-}
-.tableSortToggle{
-  background: url("../../../public/down-arrow.png");
-  width:10px;
 }
