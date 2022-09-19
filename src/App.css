@@ -31,6 +31,18 @@ main{
   margin-bottom: 50px;
 }
 
+.up:after{
+  margin-left: 10px;
+  content:"˄";
+  font-size:16px;
+}
+
+.default:after,
+.down:after{
+  margin-left: 10px;
+  content:"˅";
+  font-size:16px;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-float infinite 3s ease-in-out;
