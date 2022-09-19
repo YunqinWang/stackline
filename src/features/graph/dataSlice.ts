@@ -34,8 +34,9 @@ const initialState: DataState = {
 }
 
 const database = fetchSales(); // entire database
-export const databaseSales = database.sales; // sales data
+const databaseSales = database.sales; // sales data
 
+// type of header, accessor, and entire table
 export type Header = typeof database.sales[0];
 export type Accessor = keyof Header
 export type TableData= typeof database.sales
@@ -69,22 +70,14 @@ export const dataSlice = createSlice({
       })
       state.dataSales=databaseSales;
     },
-
-    sortTable:(state, action)=>{
-      const sortOrder =
-      action.payload === state.sortField && state.order === "asc" ? "desc" : "asc";
-      state.sortField = action.payload;
-      state.order = sortOrder;
-    },
     
-    refreshTableData:(state)=>{
-      state.dataSales =fetchSales().sales;
-    },
-
+    // handle the sorting of the table
     handleSorting : (state, action) => {
+      // get the selected field and current order
       state.sortField = action.payload.accessor;
       state.order = action.payload.sortOrder;
-       const sorted = [...state.dataSales].sort((a, b) => {
+      // sort 
+      const sorted = [...state.dataSales].sort((a, b) => {
         return (
          a[state.sortField].toString().localeCompare(b[state.sortField].toString(), "en", {
           numeric: true,
@@ -96,7 +89,7 @@ export const dataSlice = createSlice({
     }
 });
 
-export const { getInfo, getSales, refreshTableData, handleSorting, sortTable} = dataSlice.actions;
+export const { getInfo, getSales, handleSorting} = dataSlice.actions;
 
 // call a selector to select a value from the state
 export const selectProduct = (state: RootState) => state.data.product;

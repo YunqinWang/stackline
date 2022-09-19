@@ -1,3 +1,5 @@
+// create info card on the left side
+
 import React, { useState } from 'react';
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
@@ -19,8 +21,7 @@ function getTagList(tags: String[]){
   return tagList;
 };
 
-
-// return the information cardof the product
+// return the information card of the product
 export function Info() {
   
   const productName = useAppSelector(selectProduct);

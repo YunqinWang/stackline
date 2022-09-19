@@ -1,3 +1,5 @@
+// draw the table
+
 import React, { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
@@ -44,6 +46,8 @@ const TableHead = () => {
   const [sortField, setSortField] = useState("");
   const [order, setOrder] = useState("asc");
 
+  // set the accessor and order of the clicked hedaer item
+  // call reducer to handlesorting and update table
   const handleSortingChange = (accessor:Accessor) => {
     const sortOrder = accessor === sortField && order === "asc" ? "desc" : "asc";
     setSortField(accessor);
@@ -55,11 +59,12 @@ const TableHead = () => {
     <thead>
     <tr>
       {columns.map(({ label, accessor}) => {
+        //check the current order, add the order to className
         const cl =
-        sortField === accessor && order === "asc"
-        ? "up"
-        : sortField === accessor && order === "desc"
-        ? "down"
+          sortField === accessor && order === "asc"
+          ? "up"
+          : sortField === accessor && order === "desc"
+          ? "down"
         : "default";
          
       return (
