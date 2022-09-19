@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
   DataState,
-  dataSales,
   getSales,
   selectDate,
   selectRetailSales,
@@ -66,11 +65,11 @@ function getMonthLi(){
   return monthList;
 }
 
-// create an object of DataState type
-let productInstance = {} as DataState;
-
 // draw graph
 export function Graph() {
+  // create an object of DataState type
+  let productInstance = {} as DataState;
+
   // call the reducer to update the sales data
   const dispatch = useAppDispatch();
   dispatch(getSales());
@@ -182,70 +181,3 @@ export function Graph() {
    </div>
   )
 }
-
-export function Table() {
-  return (
-   <div className = {styles.graphBox}>
-      <table>
-        <TableHead/>
-        <TableBody/>
-      </table>
-   </div>
-  )
-}
-
-// set the accessors
-type Header = typeof dataSales[0];
-type Accessor = keyof Header
-const weekEnding:Accessor ="weekEnding"
-const retailSales:Accessor ="retailSales"
-const wholesaleSales:Accessor ="wholesaleSales"
-const unitsSold:Accessor ="unitsSold"
-const retailerMargin:Accessor ="retailerMargin"
-
-// hader of the table
-const columns = [
-  { label: "Week Ending", accessor: weekEnding },
-  { label: "Retail Sales", accessor: retailSales },
-  { label: "Wholesale Sales", accessor: wholesaleSales },
-  { label: "Units Sold", accessor: unitsSold },
-  { label: "Retailer Margin", accessor: retailerMargin },
- ];
-
-// return a TableHead element
-const TableHead = () => {
-  return (
-   <thead>
-    <tr>
-     {columns.map(({ label, accessor }) => {
-      return <th key={accessor}>{label}</th>;
-     })}
-    </tr>
-   </thead>
-  );
- };
-
-// used to format numbers
-const formatter = new Intl.NumberFormat();
-
-// return a TableBody element
-const TableBody = () => {
-  return (
-  <tbody>
-  {dataSales.map((data,i) => {
-    return (
-    <tr key={i}>
-      {columns.map(({accessor }) => {
-      let tData = data[accessor];
-      //format number e.g 1000 -> 1,000
-      if (typeof tData === "number"){
-        tData=formatter.format(tData);
-      }
-      return <td key={accessor}>{tData}</td>;
-      })}
-    </tr>
-    );
-  })}
-  </tbody>
-);
-};

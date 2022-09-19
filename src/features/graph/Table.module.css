@@ -1,0 +1,38 @@
+/* tabel style */
+table{
+  width: 100%;
+  padding: 40px;
+}
+
+thead tr th{
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  padding: 20px 0;
+  
+}
+
+thead tr :not(:first-child),
+tbody tr :not(:first-child){
+  text-align: right;
+}
+
+tbody tr td{
+  border-bottom: 1px solid #dddddd;
+  padding: 10px 0;
+  font-size: 12px;
+}
+
+tr :first-child{
+  width:8%;
+}
+
+tr :not(:first-child){
+  width:23%;
+}
+
+tbody tr td:nth-child(2):before,
+tbody tr td:nth-child(3):before,
+tbody tr td:nth-child(5):before{
+  content:"$";
+}
