@@ -57,9 +57,9 @@ function getMonthLi(){
   const monthName = ['Jan', 'Feb', 'Mar','Apr', 'May', 'Jun', 'Jul', 
   'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   let monthList: JSX.Element[] = [];
-  monthName.forEach((d)=>{
+  monthName.forEach((d,i)=>{
     monthList.push (
-      <li>{d.toUpperCase()}</li>
+      <li key={i}>{d.toUpperCase()}</li>
     )
   })
   return monthList;

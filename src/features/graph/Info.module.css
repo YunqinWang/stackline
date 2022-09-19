@@ -9,7 +9,12 @@
     width: 100%;
 }
 .infoName{
-    font-size: 20px;
+    font-size: 18px;
+    text-align: center;
+}
+.infoDesc{
+    font-size:15px;
+    font-weight: 300;
 }
 .infoTags{
     margin:5px 0px;

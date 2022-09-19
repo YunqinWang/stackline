@@ -9,9 +9,10 @@ thead tr th{
   font-weight: 500;
   text-transform: uppercase;
   padding: 20px 0;
-  
 }
-
+thead tr :first-child{
+  text-align: left;
+}
 thead tr :not(:first-child),
 tbody tr :not(:first-child){
   text-align: right;
@@ -24,11 +25,11 @@ tbody tr td{
 }
 
 tr :first-child{
-  width:8%;
+  width:10%;
 }
 
 tr :not(:first-child){
-  width:23%;
+  width:22.5%;
 }
 
 tbody tr td:nth-child(2):before,
@@ -36,3 +37,5 @@ tbody tr td:nth-child(3):before,
 tbody tr td:nth-child(5):before{
   content:"$";
 }
+
+

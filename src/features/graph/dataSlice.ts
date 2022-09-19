@@ -13,9 +13,9 @@ export interface DataState {
   retailMargin:number[];
   unitsSold:number[];
 
-  tableData:TableData;
   sortField:Accessor;
   order:string;
+  dataSales:TableData
 }
 const initialState: DataState = {
   product: "",
@@ -28,16 +28,17 @@ const initialState: DataState = {
   retailMargin:[],
   unitsSold:[],
 
-  tableData:[],
   sortField:"weekEnding",
-  order:"desc",
+  order:"asc",
+  dataSales:fetchSales().sales,
 }
 
 const database = fetchSales(); // entire database
-export const dataSales = database.sales; // sales data
-type Header = typeof dataSales[0];
-type Accessor = keyof Header
-type TableData= typeof dataSales
+export const databaseSales = database.sales; // sales data
+
+export type Header = typeof database.sales[0];
+export type Accessor = keyof Header
+export type TableData= typeof database.sales
 
 export const dataSlice = createSlice({
   name: 'data',
@@ -59,43 +60,43 @@ export const dataSlice = createSlice({
       state.retailMargin=[];
       state.unitsSold=[];
       
-      dataSales.forEach((d)=>{
+      databaseSales.forEach((d,i)=>{
         state.date.push(d.weekEnding);
         state.retailSales.push(d.retailSales);
         state.wholeSales.push(d.wholesaleSales);
         state.retailMargin.push(d.retailerMargin);
         state.unitsSold.push(d.unitsSold);
       })
+      state.dataSales=databaseSales;
     },
 
     sortTable:(state, action)=>{
-      console.log(sortTable);
       const sortOrder =
       action.payload === state.sortField && state.order === "asc" ? "desc" : "asc";
       state.sortField = action.payload;
       state.order = sortOrder;
-      handleSorting();
     },
     
-    getTableData:(state)=>{
-      state.tableData =fetchSales().sales;
+    refreshTableData:(state)=>{
+      state.dataSales =fetchSales().sales;
     },
 
-    handleSorting : (state) => {
-      // state.sortField = action.payload;
-       const sorted = [...dataSales].sort((a, b) => {
+    handleSorting : (state, action) => {
+      state.sortField = action.payload.accessor;
+      state.order = action.payload.sortOrder;
+       const sorted = [...state.dataSales].sort((a, b) => {
         return (
          a[state.sortField].toString().localeCompare(b[state.sortField].toString(), "en", {
           numeric: true,
          }) * (state.order === "asc" ? 1 : -1)
         );
        });
-       state.tableData = sorted;
+       state.dataSales = sorted;
      },
     }
 });
 
-export const { getInfo, getSales, getTableData, handleSorting, sortTable} = dataSlice.actions;
+export const { getInfo, getSales, refreshTableData, handleSorting, sortTable} = dataSlice.actions;
 
 // call a selector to select a value from the state
 export const selectProduct = (state: RootState) => state.data.product;
@@ -109,6 +110,7 @@ export const selectWholeSales = (state: RootState) => state.data.wholeSales;
 export const selectRetailMargin = (state: RootState) => state.data.retailMargin;
 export const selectUnitsSold = (state: RootState) => state.data.unitsSold;
 
+export const selectDataSales = (state: RootState) => state.data.dataSales;
 export default dataSlice.reducer;
 
 

@@ -13,8 +13,8 @@ import styles from './Info.module.css';
 // return the tags of the product
 function getTagList(tags: String[]){
   let tagList: JSX.Element[] =[];
-  tags.forEach(tag => {
-    tagList.push(<li className={styles.infoTag}>{tag}</li>) ;
+  tags.forEach((tag,i) => {
+    tagList.push(<li className={styles.infoTag} key={i}>{tag}</li>) ;
   })
   return tagList;
 };
