@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
+  DataState,
+  dataSales,
   getSales,
   selectDate,
   selectRetailSales,
   selectWholeSales,
   selectRetailMargin,
   selectUnitsSold,
-
-  setSortKey,
-  setTableData,
-  selectDataTable
 } from './dataSlice';
 
 import styles from './Graph.module.css';
@@ -68,32 +66,29 @@ function getMonthLi(){
   return monthList;
 }
 
-let labels:string[]=[]
-let retail:number[]=[]
-let whole:number[]=[]
-let margin:number[]=[]
-let units :number[]= []
-let dateNum :number[]=[]
+// create an object of DataState type
+let productInstance = {} as DataState;
+
 // draw graph
 export function Graph() {
   // call the reducer to update the sales data
   const dispatch = useAppDispatch();
   dispatch(getSales());
 
-  labels = useAppSelector(selectDate);
-  retail = useAppSelector(selectRetailSales);
-  whole = useAppSelector(selectWholeSales);
-  margin = useAppSelector(selectRetailMargin);
-  units = useAppSelector(selectUnitsSold);
+  productInstance.date = useAppSelector(selectDate);
+  productInstance.retailSales = useAppSelector(selectRetailSales);
+  productInstance.wholeSales = useAppSelector(selectWholeSales);
+  productInstance.retailMargin = useAppSelector(selectRetailMargin);
+  productInstance.unitsSold = useAppSelector(selectUnitsSold);
 
   // get min and max values of two sales data
   // used to set the y axis scale of sales line graph
-  const yMaxSales = getMaxOfTwoArray(retail, margin);
-  const yMinSales = getMinOfTwoArray(retail, margin);
+  const yMaxSales = getMaxOfTwoArray(productInstance.retailSales, productInstance.retailMargin);
+  const yMinSales = getMinOfTwoArray(productInstance.retailSales, productInstance.retailMargin);
 
   // get max value of the sold unit data
   // used to set the y axis scale of units chart graph
-  const yMaxUnits = getMaxOfTwoArray(units, units);
+  const yMaxUnits = getMaxOfTwoArray(productInstance.unitsSold, productInstance.unitsSold);
 
   // garph setting, like scale, axis, labels, etc
   const options = {
@@ -135,7 +130,7 @@ export function Graph() {
       },
     },
   }
-
+  const labels =   productInstance.date
   // graph data, draw Reatil Sales and Retailer Margin with lines
   // draw Sold Units with chart
   const graphData ={
@@ -144,7 +139,7 @@ export function Graph() {
       {
         type: 'line' as const,
         label: 'Retail Sales',
-        data: retail,
+        data: productInstance.retailSales,
         borderColor: '#3fa5f6',
         backgroundColor: '#3fa5f6',
         borderWidth: 3,
@@ -155,7 +150,7 @@ export function Graph() {
       {
         type: 'line' as const,
         label: 'Retailer Margin',
-        data:  margin,
+        data:  productInstance.retailMargin,
         borderColor: '#b2bace',
         backgroundColor: '#b2bace',
         borderWidth: 3,
@@ -166,7 +161,7 @@ export function Graph() {
       {
         type: 'bar' as const,
         label: 'Units Sold',
-        data: units,
+        data: productInstance.unitsSold,
         backgroundColor:'#d5e4f9',
         borderWidth: 0,
         xAxisID:'xMonth',
@@ -188,73 +183,69 @@ export function Graph() {
   )
 }
 
-
-dateNum = dateStringToNum(labels);
-// convert date string to number
-function dateStringToNum(dateArray:string[]){
-  let dateList:number[]=[];
-  dateArray.forEach((item)=>{
-    let itemDate = new Date(item);
-    itemDate.setDate(itemDate.getDate()+1);
-    dateList.push(itemDate.getTime());
-  })
-  return dateList;
-}
-
-
-
-// set a row with cells
-function getRow(rows:number[][]){
-  let allRows:JSX.Element[]=[];
-  rows.forEach((row,i)=>{
-    let rowItems =(
-      <tr key={i}>{getItem(row)}</tr>
-    )
-    allRows.push(rowItems);
-  })
-  return allRows;
-}
-
-// set cells of a row with data
-function getItem(row:number[]){
-  let items:JSX.Element[]=[]
-  row.forEach(cell => {
-    items.push(
-      <td>{cell}</td>
-    )
-  })
-  return items;
-}
-
 export function Table() {
-  const dispatch = useAppDispatch();
-  dispatch(setTableData());
-  const rawTable = useAppSelector(selectDataTable);
-  const dateNumber = dateStringToNum(labels);
-  
   return (
    <div className = {styles.graphBox}>
       <table>
-        <thead>
-          <tr>
-            <td>Week Ending  
-              <button
-              className={styles.button}
-              onClick={() => {dispatch(setSortKey("weekEnding"))}}
-             >
-            </button>
-          </td>
-            <td>Retail Sales</td>
-            <td>Wholesale Sales</td>
-            <td>Units Sold</td>
-            <td>Retailer Margin</td>
-          </tr>
-        </thead>
-        <tbody>
-          {getRow(rawTable)}
-        </tbody>
+        <TableHead/>
+        <TableBody/>
       </table>
    </div>
   )
 }
 
+// set the accessors
+type Header = typeof dataSales[0];
+type Accessor = keyof Header
+const weekEnding:Accessor ="weekEnding"
+const retailSales:Accessor ="retailSales"
+const wholesaleSales:Accessor ="wholesaleSales"
+const unitsSold:Accessor ="unitsSold"
+const retailerMargin:Accessor ="retailerMargin"
+
+// hader of the table
+const columns = [
+  { label: "Week Ending", accessor: weekEnding },
+  { label: "Retail Sales", accessor: retailSales },
+  { label: "Wholesale Sales", accessor: wholesaleSales },
+  { label: "Units Sold", accessor: unitsSold },
+  { label: "Retailer Margin", accessor: retailerMargin },
+ ];
+
+// return a TableHead element
+const TableHead = () => {
+  return (
+   <thead>
+    <tr>
+     {columns.map(({ label, accessor }) => {
+      return <th key={accessor}>{label}</th>;
+     })}
+    </tr>
+   </thead>
+  );
+ };
+
+// used to format numbers
+const formatter = new Intl.NumberFormat();
+
+// return a TableBody element
+const TableBody = () => {
+  return (
+  <tbody>
+  {dataSales.map((data,i) => {
+    return (
+    <tr key={i}>
+      {columns.map(({accessor }) => {
+      let tData = data[accessor];
+      //format number e.g 1000 -> 1,000
+      if (typeof tData === "number"){
+        tData=formatter.format(tData);
+      }
+      return <td key={accessor}>{tData}</td>;
+      })}
+    </tr>
+    );
+  })}
+  </tbody>
+);
+};

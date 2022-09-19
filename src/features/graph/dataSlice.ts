@@ -12,10 +12,6 @@ export interface DataState {
   wholeSales:number[];
   retailMargin:number[];
   unitsSold:number[];
-
-  sortOrder:SortOrder;
-  sortKey:SortKeys;
-  dataTable:number[][];
 }
 const initialState: DataState = {
   product: "",
@@ -27,21 +23,10 @@ const initialState: DataState = {
   wholeSales:[],
   retailMargin:[],
   unitsSold:[],
-
-  sortOrder: "ascn",
-  sortKey:"weekEnding",
-  dataTable:[],
 }
 
-
 const database = fetchSales(); // entire database
-const dataSales = database.sales; // sales data
-
-
-type SortOrder = "ascn" | "desc";
-type DataSales = typeof dataSales;
-type SortKeys = keyof DataSales[0];
-
+export const dataSales = database.sales; // sales data
 
 export const dataSlice = createSlice({
   name: 'data',
@@ -71,24 +56,10 @@ export const dataSlice = createSlice({
         state.unitsSold.push(d.unitsSold);
       })
     },
-
-    setSortKey:(state, action) => {
-      state.sortKey = action.payload;
-    },
-    // set the table with rows
-    setTableData:(state)=> {
-      let rows:number[][] =[];
-      for (let i=0;i<state.date.length;i++) {
-        let eachRow:any[] = [state.date[i],state.retailSales[i],state.wholeSales[i],
-        state.unitsSold[i],state.retailMargin[i]];
-        rows.push(eachRow);
-      }
-      state.dataTable = rows;
-    }
   },
 });
 
-export const { getInfo, getSales, setSortKey, setTableData } = dataSlice.actions;
+export const { getInfo, getSales} = dataSlice.actions;
 
 // call a selector to select a value from the state
 export const selectProduct = (state: RootState) => state.data.product;
@@ -101,8 +72,6 @@ export const selectRetailSales = (state: RootState) => state.data.retailSales;
 export const selectWholeSales = (state: RootState) => state.data.wholeSales;
 export const selectRetailMargin = (state: RootState) => state.data.retailMargin;
 export const selectUnitsSold = (state: RootState) => state.data.unitsSold;
-
-export const selectDataTable = (state: RootState) => state.data.dataTable;
 
 export default dataSlice.reducer;
 
