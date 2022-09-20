@@ -1,3 +1,6 @@
+---
+permalink: /index.html
+---
 # Stacklin Frontend Assesment
 ## Description
 
