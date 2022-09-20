@@ -12,7 +12,7 @@ type Props = {
 function Nav() {
     return (
       <div className="nav-box">
-        <img src={logo}/>
+        <img src={logo} alt ="logo"/>
       </div>
     );
   }
