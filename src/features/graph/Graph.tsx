@@ -91,6 +91,11 @@ export function Graph() {
   // used to set the y axis scale of units chart graph
   const yMaxUnits = getMaxOfTwoArray(productInstance.unitsSold, productInstance.unitsSold);
 
+   // used to scale the line graph, 2 means the max value of yxis is the 2*max,
+  const lineScaleMax = 2
+  // used to scale the line graph, 3 means the max value of yxis is the 3*max,
+  const chartScaleMax = 3
+
   // garph setting, like scale, axis, labels, etc
   const options = {
     responsive: true,
@@ -116,15 +121,15 @@ export function Graph() {
         display: false,
       },
       ySales: {
-        min: -yMaxSales*3+yMinSales,
-        max: yMaxSales*2,
+        min: -yMaxSales*(lineScaleMax+1)+yMinSales,
+        max: yMaxSales*lineScaleMax,
         type: 'linear' as const,
         display: false,
         position: 'left' as const,
       },
       yUnit: {
         min: 0,
-        max: yMaxUnits*3,
+        max: yMaxUnits*chartScaleMax,
         type: 'linear' as const,
         display: false,
         position: 'right' as const,

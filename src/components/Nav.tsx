@@ -1,3 +1,5 @@
+// nav bar with logo
+
 import React from "react";
 import logo from '../stackline_logo.svg';
 import './nav.css';
