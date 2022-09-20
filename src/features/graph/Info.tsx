@@ -1,7 +1,6 @@
 // create info card on the left side
 
-import React, { useState } from 'react';
-
+import React from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
   getInfo,
@@ -35,7 +34,7 @@ export function Info() {
   return (
     <div>
         <div className={styles.infoImg}>
-          <img src={productImg}/>
+          <img src={productImg} alt="Product"/>
         </div>
         <div className={styles.infoBox}>
           <h4 className={styles.infoName}>{productName}</h4>

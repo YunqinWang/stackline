@@ -1,6 +1,6 @@
 // draw the line garph and bar chart
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
   DataState,
