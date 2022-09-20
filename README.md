@@ -15,7 +15,7 @@ When hovering on the graph, you can get tooltips.
 
 When clicking the sorting toggle in the table header, you can sort the data.
 
-<img src="./screenshot/Stackline-screenshot.png" alt="screenshot" width="200"/>
+<img src="./screenshot/Stackline-screenshot.png" alt="screenshot" width="300"/>
 
 ## Used Language, Library, Framework
 The project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), 
